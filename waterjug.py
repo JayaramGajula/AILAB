@@ -1,0 +1,55 @@
+import math
+from collections import defaultdict
+
+visited = defaultdict(lambda: False)
+
+J1, J2, L = 0, 0, 0
+
+def WJ_problem(X, Y):
+    global J1, J2, L
+
+    if (X == L and Y == 0) or (Y == L and X == 0):
+        print("(", X, ", ", Y, ")", sep="")
+        return True
+
+    if visited[(X, Y)] == False:
+        print("(", X, ", ", Y, ")", sep="")
+
+        visited[(X, Y)] = True
+
+        return (
+            WJ_problem(0, Y)
+            or WJ_problem(X, 0)
+            or WJ_problem(J1, Y)
+            or WJ_problem(X, J2)
+            or WJ_problem(X + min(Y, (J1 - X)), Y - min(Y, (J1 - X)))
+            or WJ_problem(X - min(X, (J2 - Y)), Y + min(X, (J2 - Y)))
+        )
+    else:
+        return False
+
+def check():
+    if J1 <= L and J2 <= L:
+        print("Not possible")
+        return True
+    elif (J1 / 2 == J2 or J2 / 2 == J1) and (J1 != L and J2 != L):
+        print("Not Possible")
+        return True
+    elif L % (math.gcd(J1, J2)) != 0:
+        print("Not Possible")
+        return True
+    return False
+
+# Main Code
+J1 = int(input("Enter the volume of the first jug: "))
+J2 = int(input("Enter the volume of the second jug: "))
+L = int(input("Enter the target volume: "))
+
+if check():
+    print()
+else:
+    print("Path is as Follow:")
+    if WJ_problem(0, 0):
+        print("Solution found.")
+    else:
+        print("No solution found.")
